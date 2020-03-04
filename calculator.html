@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<head>
+    <title>Calculator</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+
+    .ac-btn{
+        margin-bottom: 5px;
+        background-color: brown;
+        color: cornsilk;
+        height: 50px;
+        width: 50px;
+    }
+
+    .container{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 300px;
+        margin: 10px;
+    }
+
+    .container > input[type=text]{
+        width: 296px;
+        height: 50px;
+        font-size: 40px;
+        margin-bottom: 5px;
+        text-align: right;
+    }
+
+    .container > .func-group{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        flex: 1;
+        margin: 0 -2px 5px -2px;
+    }
+
+    .container > .func-group > input[type=button]{
+        width: 46px;
+        margin: 2px;
+    }
+
+    .container > .input-group{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        flex: 1;
+        margin: 0 -2px 5px -2px;
+    }
+
+    .container > .input-group > input[type=button]{
+        width: 72px;
+        height: 72px;
+        margin: 2px;
+        font-size: 30px;
+    }
+</style>
+<body>
+    <div class="container">
+        <input id="AC" type="button" value="AC" class="ac-btn"/>
+        <input id="display" type="text" value="0" readonly/>
+        <div class="func-group">
+            <input type="button" value="MR"/>
+            <input type="button" value="MC"/>
+            <input type="button" value="M+"/>
+            <input type="button" value="M-"/>
+            <input type="button" value="C"/>
+            <input type="button" value="←"/>
+        </div>
+        <div class="input-group">
+            <input type="button" value="7"/>
+            <input type="button" value="8"/>
+            <input type="button" value="9"/>
+            <input type="button" value="+"/>
+            <input type="button" value="4"/>
+            <input type="button" value="5"/>
+            <input type="button" value="6"/>
+            <input type="button" value="-"/>
+            <input type="button" value="1"/>
+            <input type="button" value="2"/>
+            <input type="button" value="3"/>
+            <input type="button" value="*"/>
+            <input type="button" value="0"/>
+            <input type="button" value="."/>
+            <input type="button" value="="/>
+            <input type="button" value="/"/>
+        </div>
+    </div>
+</body>
+<script>
+    var global_var = {
+        memory: 0,
+        operatorSymbol: ['+', '-', '*', '/'],
+        digSymbol: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+        operatorFlag: false
+    }
+
+    $(function(){
+    })
+
+    //重開機
+    $("#AC").click(function(){
+        global_var.memory = 0;
+        global_var.operatorFlag = false;
+        setDisplayValue("0");
+    });
+
+    //計算區域
+    $(".input-group > input[type=button]").click(function(){
+        var input = $(this).val();
+
+        if(input == "="){
+            //移除前後運算元，避免eval出錯誤
+            removePostfixOperator();
+            calculate("");
+        }
+        else if(input == "+" || input == "-" || input == "*" || input == "/"){
+            if(!global_var.operatorFlag && getDisplayValue().length > 0){
+                //不允許運算元重複按，直到輸入數字或計算
+                setDisplayValue(getDisplayValue() + $(this).val());
+                global_var.operatorFlag = true;
+            }
+            
+        }
+        else if(input == "."){
+            //小數點能在以下情況按下
+            // 1. 左側有數字(非運算元)
+            // 2. 運算元間只有一個點
+
+            var display = getDisplayValue();
+            if(display.length > 0 && hasLeftSideDig() && isOnlyPointWithinOperator()){
+                setDisplayValue(getDisplayValue() + $(this).val());
+            }
+
+            console.log(hasLeftSideDig());
+        }
+        else{
+            //數字
+            setDisplayValue(getDisplayValue() + $(this).val());
+            global_var.operatorFlag = false;
+        }
+
+    });
+
+    function calculate(memory){
+        //memory: + -代表memory計算
+        var result = parseFloat(eval(getDisplayValue()).toPrecision(7));
+
+        if(memory == "+"){
+            global_var.memory += result;
+
+            console.log("memory: " + global_var.memory);
+        }
+        else if(memory == "-"){
+            global_var.memory -= result;
+
+            console.log("memory: " + global_var.memory);
+        }
+        else{
+            setDisplayValue(result);
+        }
+
+        console.log("calculated!!");
+    }
+
+    function removePostfixOperator(){
+        //移除postfix operator(prefix有防呆)
+        var display = getDisplayValue();
+        var endIndex = display.length - 1;
+        var startIndex = endIndex;
+        var flag = false;  //尾端是否有運算元
+
+        for(var i = endIndex;i > 1;i--){
+            if(global_var.operatorSymbol.indexOf(display[i]) > -1){
+                startIndex = i;
+                flag = true;
+            }
+            else{
+                break;
+            }
+        }
+
+        if(flag){
+            setDisplayValue(display.substr(0, startIndex));
+        }    
+    }
+
+    function hasLeftSideDig(){
+        return global_var.digSymbol.indexOf(getDisplayValue()[getDisplayValue().length - 1]) > -1;
+    }
+
+    function isOnlyPointWithinOperator(){
+        //檢查準備輸入的小數點是否為運算元間的唯一
+
+        var display = getDisplayValue();
+
+        //最近的小數點位置 
+        var lastPointIndex = -1;
+        for(var i = display.length - 1;i > 0;i--){
+            if(display[i] == "."){
+                lastPointIndex = i;
+            }
+        }
+        // console.log("lastPointIndex: " + lastPointIndex);
+
+        //最近的運算元位置
+        var lastOpIndex = -1;
+        for(var i = display.length - 1;i > 0;i--){
+            if(global_var.operatorSymbol.indexOf(display[i]) > -1){
+                lastOpIndex = i;
+            }
+        }
+        // console.log("lastOpIndex: " + lastOpIndex);
+
+        return (lastOpIndex > lastPointIndex) || (lastPointIndex == -1 && lastOpIndex == -1);
+    }
+
+    //按鍵區域
+    $(".func-group > input[type=button]").click(function(){
+        var funcName = $(this).val();
+
+        switch(funcName){
+            case "MR":
+                console.log("Memory Read");
+
+                console.log(global_var.memory);
+
+                setDisplayValue(global_var.memory);
+                break;
+            case "MC":
+                console.log("Memory Clean");
+
+                global_var.memory = 0;
+                break;
+            case "M+":
+                console.log("Memory Plus");
+
+                calculate("+");
+                break;
+            case "M-":
+                console.log("Memory Minus");
+
+                calculate("-");
+                break;
+            case "C":
+                console.log("Clean");
+                setDisplayValue("");
+                break;
+            case "←":
+                console.log("Backspace");
+                var display = getDisplayValue();
+                setDisplayValue(display.substr(0, display.length - 1));
+                break;
+        }
+    });
+
+    function getDisplayValue(){
+        return $("#display").val();
+    }
+
+    function setDisplayValue(val){
+        val = val.toString();  //轉為字串處理
+
+        //不允許數字以0開頭，以運算符號區隔
+        //split時保留數字和separator
+        //https://stackoverflow.com/questions/12001953/javascript-and-regex-split-string-and-keep-the-separator
+        var temp = val.split(/([-|+|*|/])/g);
+        val = "";
+        for(var i = 0;i < temp.length;i++){
+            if(temp[i] != ""){
+                //顯示符號
+                if(global_var.operatorSymbol.indexOf(temp[i]) > -1){
+                    val += temp[i];
+                }
+                else{
+                    //顯示數字(包含小數點)
+                    if(temp[i].indexOf(".") > -1){
+                        val += temp[i];
+                    }
+                    else{
+                        val += parseFloat(temp[i]);
+                    }
+                }
+            }
+        }
+
+        console.log("val: " + val);
+
+        //計算機只有八位(不含小數點)
+        if(val.indexOf(".") > -1){
+            $("#display").val(val.substr(0, 9));
+        }
+        else{
+            $("#display").val(val.substr(0, 8));
+        }        
+    }
+</script>
+</html>
