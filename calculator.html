@@ -116,7 +116,8 @@
         memory: 0,
         operatorSymbol: ['+', '-', '*', '/'],
         digSymbol: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-        operatorFlag: false
+        operatorFlag: false,
+        pointFlag: false
     }
 
     $(function(){
@@ -126,6 +127,7 @@
     $("#AC").click(function(){
         global_var.memory = 0;
         global_var.operatorFlag = false;
+        global_var.pointFlag = false;
         setDisplayValue("0");
     });
 
@@ -134,12 +136,13 @@
         var input = $(this).val();
 
         if(input == "="){
-            //移除前後運算元，避免eval出錯誤
-            removePostfixOperator();
             calculate("");
+
+            global_var.operatorFlag = false;
+            global_var.pointFlag = false;
         }
         else if(input == "+" || input == "-" || input == "*" || input == "/"){
-            if(!global_var.operatorFlag && getDisplayValue().length > 0){
+            if(!global_var.operatorFlag && getDisplayValue().length > 0 && !global_var.pointFlag){
                 //不允許運算元重複按，直到輸入數字或計算
                 setDisplayValue(getDisplayValue() + $(this).val());
                 global_var.operatorFlag = true;
@@ -152,22 +155,25 @@
             // 2. 運算元間只有一個點
 
             var display = getDisplayValue();
-            if(display.length > 0 && hasLeftSideDig() && isOnlyPointWithinOperator()){
+            if(display.length > 0 && hasLeftSideDig() && isOnlyPointWithinOperator() && !global_var.pointFlag){
                 setDisplayValue(getDisplayValue() + $(this).val());
+                global_var.pointFlag = true;
             }
-
-            console.log(hasLeftSideDig());
         }
         else{
             //數字
             setDisplayValue(getDisplayValue() + $(this).val());
             global_var.operatorFlag = false;
+            global_var.pointFlag = false;
         }
 
     });
 
-    function calculate(memory){
+    function calculate(memory){                   
         //memory: + -代表memory計算
+        //移除前後運算元，避免eval出錯誤
+        removePostfixOperator();
+
         var result = parseFloat(eval(getDisplayValue()).toPrecision(7));
 
         if(memory == "+"){
@@ -194,7 +200,8 @@
         var startIndex = endIndex;
         var flag = false;  //尾端是否有運算元
 
-        for(var i = endIndex;i > 1;i--){
+        for(var i = endIndex;i > 0;i--){
+            console.log(display[i]);
             if(global_var.operatorSymbol.indexOf(display[i]) > -1){
                 startIndex = i;
                 flag = true;
