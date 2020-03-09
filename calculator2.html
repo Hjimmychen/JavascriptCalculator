@@ -1,19 +1,21 @@
 <!DOCTYPE html>
+
 <head>
     <title>Calculator2</title>
-    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
 </head>
 <style>
-    *{
+    * {
         margin: 0;
         padding: 0;
     }
 
-    body{
-        background-image: linear-gradient(to right, #BA68C8 , #9575CD);
+    body {
+        background-image: linear-gradient(to right, #BA68C8, #9575CD);
     }
 
-    .ac-btn{
+    .ac-btn {
         margin-bottom: 5px;
         background-color: brown;
         color: cornsilk;
@@ -22,7 +24,7 @@
         border: 0;
     }
 
-    .container{
+    .container {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -31,7 +33,7 @@
         margin: 150px auto;
     }
 
-    .container > input[type=text]{
+    .container>input[type=text] {
         width: 296px;
         height: 50px;
         font-size: 40px;
@@ -39,7 +41,7 @@
         text-align: right;
     }
 
-    .container > .func-group{
+    .container>.func-group {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
@@ -47,13 +49,13 @@
         margin: 0 -2px 5px -2px;
     }
 
-    .container > .func-group > input[type=button]{
+    .container>.func-group>input[type=button] {
         width: 46px;
         margin: 2px;
         border: 0;
     }
 
-    .container > .input-group{
+    .container>.input-group {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -61,7 +63,7 @@
         margin: 0 -2px 5px -2px;
     }
 
-    .container > .input-group > input[type=button]{
+    .container>.input-group>input[type=button] {
         width: 72px;
         height: 72px;
         margin: 2px;
@@ -69,45 +71,46 @@
         border: 0;
     }
 
-    input[type=button]{
+    input[type=button] {
         cursor: pointer;
         transition: 0.2s;
     }
 
-    input[type=button]:hover{
+    input[type=button]:hover {
         background-color: #757575;
         color: white;
     }
 </style>
+
 <body>
     <div class="container">
-        <input id="AC" type="button" value="AC" class="ac-btn"/>
-        <input id="display" type="text" value="0" readonly/>
+        <input id="AC" type="button" value="AC" class="ac-btn" />
+        <input id="display" type="text" value="0" readonly />
         <div class="func-group">
-            <input type="button" value="MR"/>
-            <input type="button" value="MC"/>
-            <input type="button" value="M+"/>
-            <input type="button" value="M-"/>
-            <input type="button" value="C"/>
-            <input type="button" value="←"/>
+            <input type="button" value="MR" />
+            <input type="button" value="MC" />
+            <input type="button" value="M+" />
+            <input type="button" value="M-" />
+            <input type="button" value="C" />
+            <input type="button" value="←" />
         </div>
         <div class="input-group">
-            <input type="button" value="7"/>
-            <input type="button" value="8"/>
-            <input type="button" value="9"/>
-            <input type="button" value="+"/>
-            <input type="button" value="4"/>
-            <input type="button" value="5"/>
-            <input type="button" value="6"/>
-            <input type="button" value="-"/>
-            <input type="button" value="1"/>
-            <input type="button" value="2"/>
-            <input type="button" value="3"/>
-            <input type="button" value="*"/>
-            <input type="button" value="0"/>
-            <input type="button" value="."/>
-            <input type="button" value="="/>
-            <input type="button" value="/"/>
+            <input type="button" value="7" />
+            <input type="button" value="8" />
+            <input type="button" value="9" />
+            <input type="button" value="+" />
+            <input type="button" value="4" />
+            <input type="button" value="5" />
+            <input type="button" value="6" />
+            <input type="button" value="-" />
+            <input type="button" value="1" />
+            <input type="button" value="2" />
+            <input type="button" value="3" />
+            <input type="button" value="*" />
+            <input type="button" value="0" />
+            <input type="button" value="." />
+            <input type="button" value="=" />
+            <input type="button" value="/" />
         </div>
     </div>
 </body>
@@ -121,13 +124,12 @@
     var calFlag = false;
     var isNewNum = true;
     var numInput = true;  //是否已輸入數字
-    var pointFlag = false;
 
-    $(function(){
+    $(function () {
     })
 
     //重開機
-    $("#AC").click(function(){
+    $("#AC").click(function () {
         queue = new Array();
         tempOP = "";
         tempTotal = 0;
@@ -139,40 +141,40 @@
     });
 
     //計算區域
-    $(".input-group > input[type=button]").click(function(){
+    $(".input-group > input[type=button]").click(function () {
         var input = $(this).val();
 
-        if(input == "="){
-            if(calFlag){
+        if (input == "=") {
+            if (calFlag) {
                 //重複等於會將最後兩值重複
                 var lastOne = queue[queue.length - 1];
                 var lastTwo = queue[queue.length - 2];
                 queue.push(lastTwo);
-                queue.push(lastOne);                   
+                queue.push(lastOne);
                 setDisplayValue(calculateQueue());
             }
-            else{
+            else {
                 pushOp(tempOP);
                 queue.push(getDisplayValue());
                 calFlag = true;
                 setDisplayValue(calculateQueue());
-            }         
+            }
             tempOP = "";
-            tempTotal = getDisplayValue();                    
+            tempTotal = getDisplayValue();
         }
-        else if(input == "+" || input == "-" || input == "*" || input == "/"){
+        else if (input == "+" || input == "-" || input == "*" || input == "/") {
             tempOP = input;
 
-            if(numInput && tempTotal == 0){
+            if (numInput && tempTotal == 0) {
                 //加新數字前先計算
                 isNewNum = true;
                 var result = calculateQueue();
-                if(result != 0){
+                if (result != 0) {
                     queue = [result];
                     pushOp(tempOP);
                     console.log(queue);
                 }
-                
+
 
                 queue.push(getDisplayValue());
                 pushOp(tempOP);
@@ -180,50 +182,54 @@
                 setDisplayValue(calculateQueue());
 
                 numInput = false;
-                          
-            } 
-            else{
+
+            }
+            else {
                 pushOp(tempOP);
                 tempOP = tempOP;
                 isNewNum = true;
                 calFlag = false;
                 console.log(queue);
             }
-            pointFlag = false;            
         }
-        else if(input == "."){
+        else if (input == ".") {
             //判斷小數點是否能按下
-            if(!pointFlag){
-                if(tempOP.length > 0){
+            if (!hasPoint()) {
+
+                if (isNewNum) {
+                    setDisplayValue("");
+                    isNewNum = false;
+                }
+                numInput = true;
+
+                if(getDisplayValue() == "0"){
                     $("#display").val("0.");
                 }
                 else{
                     $("#display").val(getDisplayValue() + $(this).val());
                 }
-                
-                pointFlag = true;
             }
-            
+
         }
-        else{
+        else {
             //0-9    
-            console.log(getDisplayValue());    
-            if(isNewNum){
+            console.log(getDisplayValue());
+            if (isNewNum) {
                 setDisplayValue("");
-                isNewNum = false;          
+                isNewNum = false;
             }
             console.log(getDisplayValue());
             numInput = true;
-            setDisplayValue(getDisplayValue() + $(this).val());         
+            setDisplayValue(getDisplayValue() + $(this).val());
         }
 
     });
 
     //按鍵區域
-    $(".func-group > input[type=button]").click(function(){
+    $(".func-group > input[type=button]").click(function () {
         var funcName = $(this).val();
 
-        switch(funcName){
+        switch (funcName) {
             case "MR":
                 console.log("Memory Read: " + memory);
 
@@ -254,54 +260,54 @@
                 console.log("Backspace");
                 var display = getDisplayValue().toString();
 
-                if(display.length == 1){
+                if (display.length == 1) {
                     //最少顯示0
                     setDisplayValue("0");
                 }
-                else{
+                else {
                     //刪掉最後一位
                     setDisplayValue(display.substr(0, display.length - 1));
                 }
 
-                
+
                 break;
         }
     });
 
-    function calculateQueue(){
+    function calculateQueue() {
         //根據輸入計算結果
-        if(queue.length == 0){
+        if (queue.length == 0) {
             return 0;
         }
-        else{
+        else {
             //移除最後的運算元
             var removeIndex = queue.length - 1;
-            if(opSymbol.indexOf(queue[removeIndex]) > -1){
+            if (opSymbol.indexOf(queue[removeIndex]) > -1) {
                 queue.splice(removeIndex, 1);
             }
 
             var formula = "";
-            for(var i = 0;i < queue.length;i++){
+            for (var i = 0; i < queue.length; i++) {
                 var input = queue[i].toString();
                 formula += input;
             }
 
             var temp = formula.split(/([-|+|*|/])/g);
             formula = "";
-            for(var i = 0;i < temp.length;i++){
-                if(temp[i] != ""){
-                    if(opSymbol.indexOf(temp[i]) > -1){
-                        formula += temp[i];
-                }
-                else{
-                    //顯示數字(包含小數點)
-                    if(temp[i].indexOf(".") > -1){
+            for (var i = 0; i < temp.length; i++) {
+                if (temp[i] != "") {
+                    if (opSymbol.indexOf(temp[i]) > -1) {
                         formula += temp[i];
                     }
-                    else{
-                        formula += parseFloat(temp[i]);
+                    else {
+                        //顯示數字(包含小數點)
+                        if (temp[i].indexOf(".") > -1) {
+                            formula += temp[i];
+                        }
+                        else {
+                            formula += parseFloat(temp[i]);
+                        }
                     }
-                }
                 }
             }
 
@@ -309,76 +315,77 @@
             var result = 0.0;
             var calOP = "";
             console.log("temp: " + temp);
-            for(var i = 0;i < temp.length;i++){
+            for (var i = 0; i < temp.length; i++) {
                 console.log(temp[i]);
-                switch(temp[i]){
+                switch (temp[i]) {
                     case "+":
                     case "-":
                     case "*":
                     case "/":
                         calOP = temp[i];
-                    break;
+                        break;
                     default:
-                        if(calOP == "+"){
+                        if (calOP == "+") {
                             result += parseFloat(temp[i]);
                         }
-                        else if(calOP == "-"){
+                        else if (calOP == "-") {
                             result -= parseFloat(temp[i]);
                         }
-                        else if(calOP == "*"){
+                        else if (calOP == "*") {
                             result *= parseFloat(temp[i]);
                         }
-                        else if(calOP == "/"){
+                        else if (calOP == "/") {
                             result /= parseFloat(temp[i]);
                         }
-                        else{
+                        else {
                             result += parseFloat(temp[i]);
                         }
-                    break;
+                        break;
                 }
-                console.log(result);
             }
-
-            console.log("result: " + result);
             return parseFloat(result.toPrecision(8));
         }
     }
 
-    function pushOp(op){
+    function hasPoint(){
+        return getDisplayValue().indexOf(".") > -1;
+    }
+
+    function pushOp(op) {
         //queue中最後一個邏輯可被覆蓋
-        if(opSymbol.indexOf(queue[queue.length - 1]) > -1){
+        if (opSymbol.indexOf(queue[queue.length - 1]) > -1) {
             queue[queue.length - 1] = op;
         }
-        else{
+        else {
             queue.push(op);
         }
     }
 
-    function getDisplayValue(){
+    function getDisplayValue() {
         return $("#display").val();
     }
 
-    function setDisplayValue(val){ 
-        if(val.length == 0){
+    function setDisplayValue(val) {
+        if (val.length == 0) {
             $("#display").val("0");
             return;
         }
 
         //不允許數字以0開頭，但小數點保留
-        console.log(val);
         val = val.toString();
-        if(val.indexOf(".") == -1){
+        if (val.indexOf(".") == -1) {
             val = parseFloat(val);
         }
 
         //計算機只有八位(不含小數點)
         val = val.toString();
-        if(val.indexOf(".") > -1){
+        if (val.indexOf(".") > -1) {
             $("#display").val(val.substr(0, 9));
         }
-        else{
+        else {
             $("#display").val(val.substr(0, 8));
-        }        
+        }
     }
 </script>
+
 </html>
