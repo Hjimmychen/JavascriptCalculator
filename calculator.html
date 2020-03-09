@@ -292,7 +292,7 @@
     function setDisplayValue(val){
         val = val.toString();  //轉為字串處理
 
-        //不允許數字以0開頭，以運算符號區隔
+        //不允許數字以0開頭，以運算符號區隔(02+10 -> 2+10)
         //split時保留數字和separator
         //https://stackoverflow.com/questions/12001953/javascript-and-regex-split-string-and-keep-the-separator
         var temp = val.split(/([-|+|*|/])/g);
@@ -314,8 +314,6 @@
                 }
             }
         }
-
-        // console.log("val: " + val);
 
         //計算機只有八位(不含小數點)
         if(val.indexOf(".") > -1){
