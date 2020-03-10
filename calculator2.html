@@ -269,6 +269,7 @@
 
                 numInput = false;
                 calFlag = true;
+                console.log(queue);
                 //queue = new Array();
                 // if(tempOP.length != 0){
                 //     queue = new Array();
@@ -359,6 +360,7 @@
             var temp = formula.split(/([-|+|*|/])/g);
             formula = "";
             for (var i = 0; i < temp.length; i++) {
+                
                 if (temp[i] != "") {
                     if (opSymbol.indexOf(temp[i]) > -1) {
                         formula += temp[i];
@@ -372,6 +374,9 @@
                             formula += parseFloat(temp[i]);
                         }
                     }
+                }
+                else{
+                    temp[i] = 0;
                 }
             }
 
