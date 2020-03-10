@@ -296,26 +296,25 @@
                 setDisplayValue(cal);
 
                 numInput = false;
-
-                if(tempOP.length != 0){
-                    queue = new Array();
-                }
-                else{
-                    queue = [cal];
-                }
+                calFlag = true;
+                // if(tempOP.length != 0){
+                //     queue = new Array();
+                // }
+                // else{
+                //     queue = [cal];
+                // }
                 
                 isNewNum = true;
                 break;
             case "C":
                 console.log("Clean");
-                queue = new Array();
+                // queue = new Array();
                 tempTotal = 0;
                 calFlag = false;
 
                 
                 isNewNum = true;
                 numInput = false;
-
                 setDisplayValue("0");
                 break;
             case "←":
