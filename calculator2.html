@@ -172,13 +172,13 @@
                 if (result != 0) {
                     queue = [result];
                     pushOp(tempOP);
-                    console.log(queue);
+                    // console.log(queue);
                 }
 
 
                 queue.push(getDisplayValue());
                 pushOp(tempOP);
-                console.log(queue);
+                // console.log(queue);
                 setDisplayValue(calculateQueue());
 
                 numInput = false;
@@ -189,7 +189,7 @@
                 tempOP = tempOP;
                 isNewNum = true;
                 calFlag = false;
-                console.log(queue);
+                // console.log(queue);
             }
         }
         else if (input == ".") {
@@ -213,12 +213,12 @@
         }
         else {
             //0-9    
-            console.log(getDisplayValue());
+            // console.log(getDisplayValue());
             if (isNewNum) {
                 setDisplayValue("");
                 isNewNum = false;
             }
-            console.log(getDisplayValue());
+            // console.log(getDisplayValue());
             numInput = true;
             setDisplayValue(getDisplayValue() + $(this).val());
         }
@@ -241,15 +241,32 @@
                 memory = 0;
                 break;
             case "M+":
-                console.log("Memory Plus");
+                var result = calculateQueue();
+                if (result != 0) {
+                    queue = [result];
+                    pushOp(tempOP);
+                }
+                queue.push(getDisplayValue());
+                numInput = false;
+                memory += parseFloat(calculateQueue());
+                setDisplayValue(calculateQueue());
 
-                memory += getDisplayValue();
+                queue = new Array();
                 isNewNum = true;
                 break;
             case "M-":
-                console.log("Memory Minus");
+                var result = calculateQueue();
+                if (result != 0) {
+                    queue = [result];
+                    pushOp(tempOP);
+                }
+                queue.push(getDisplayValue());
+                numInput = false;
 
-                memory -= getDisplayValue();
+                memory -= parseFloat(calculateQueue());
+                setDisplayValue(calculateQueue());
+
+                queue = new Array();
                 isNewNum = true;
                 break;
             case "C":
