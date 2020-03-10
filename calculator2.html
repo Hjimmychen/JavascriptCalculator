@@ -383,7 +383,7 @@
     }
 
     function setDisplayValue(val) {
-        if (val.length == 0) {
+        if (val.length == 0 || val == "-") {
             $("#display").val("0");
             return;
         }
