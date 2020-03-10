@@ -145,13 +145,21 @@
         var input = $(this).val();
 
         if (input == "=") {
+            console.log(calFlag);
+            console.log(queue);
+            console.log(isNewNum);
             if (calFlag) {
                 //重複等於會將最後兩值重複
-                var lastOne = queue[queue.length - 1];
-                var lastTwo = queue[queue.length - 2];
-                queue.push(lastTwo);
-                queue.push(lastOne);
-                setDisplayValue(calculateQueue());
+                if(!isNewNum && queue.length >= 3){
+                    var lastOne = queue[queue.length - 1];
+                    console.log("lastOne: " + lastOne);
+                    var lastTwo = queue[queue.length - 2];
+                    console.log("lastTwo: " + lastTwo);
+                    queue.push(lastTwo);
+                    queue.push(lastOne);
+                    setDisplayValue(calculateQueue());
+                }
+
             }
             else {
                 pushOp(tempOP);
@@ -164,7 +172,8 @@
         }
         else if (input == "+" || input == "-" || input == "*" || input == "/") {
             tempOP = input;
-
+            console.log(numInput);
+            console.log(tempTotal);
             if (numInput && tempTotal == 0) {
                 //加新數字前先計算
                 isNewNum = true;
@@ -172,7 +181,6 @@
                 if (result != 0) {
                     queue = [result];
                     pushOp(tempOP);
-                    // console.log(queue);
                 }
 
 
@@ -191,6 +199,7 @@
                 calFlag = false;
                 // console.log(queue);
             }
+            console.log(queue);
         }
         else if (input == ".") {
             //判斷小數點是否能按下
@@ -237,40 +246,75 @@
                 break;
             case "MC":
                 console.log("Memory Clean");
-
+                calFlag = false;
                 memory = 0;
+                isNewNum = true;
+                tempTotal = 0;
+                queue = new Array();
                 break;
             case "M+":
-                var result = calculateQueue();
+                var result = calculateQueue();  //2*
                 if (result != 0) {
-                    queue = [result];
-                    pushOp(tempOP);
+                    queue = [result];  //[2]
                 }
-                queue.push(getDisplayValue());
-                numInput = false;
-                memory += parseFloat(calculateQueue());
-                setDisplayValue(calculateQueue());
+                if(tempOP.length > 0){
+                    pushOp(tempOP);  //2*
+                    queue.push(getDisplayValue());  //2*2
+                }
+                console.log("queue: " + queue);
 
-                queue = new Array();
-                isNewNum = true;
+                var cal = calculateQueue();  //4
+                memory += parseFloat(cal);  //4
+                setDisplayValue(cal);
+
+                numInput = false;
+                calFlag = true;
+                //queue = new Array();
+                // if(tempOP.length != 0){
+                //     queue = new Array();
+                // }
+                // else{
+                //     queue = [cal];
+                // }
+                
+                isNewNum = false;
                 break;
             case "M-":
-                var result = calculateQueue();
+            var result = calculateQueue();
                 if (result != 0) {
                     queue = [result];
-                    pushOp(tempOP);
                 }
-                queue.push(getDisplayValue());
+                if(tempOP.length > 0){
+                    pushOp(tempOP);
+                    queue.push(getDisplayValue());
+                }
+                console.log("queue: " + queue);
+
+                var cal = calculateQueue();
+                memory -= parseFloat(cal);
+                setDisplayValue(cal);
+
                 numInput = false;
 
-                memory -= parseFloat(calculateQueue());
-                setDisplayValue(calculateQueue());
-
-                queue = new Array();
+                if(tempOP.length != 0){
+                    queue = new Array();
+                }
+                else{
+                    queue = [cal];
+                }
+                
                 isNewNum = true;
                 break;
             case "C":
                 console.log("Clean");
+                queue = new Array();
+                tempTotal = 0;
+                calFlag = false;
+
+                
+                isNewNum = true;
+                numInput = false;
+
                 setDisplayValue("0");
                 break;
             case "←":
@@ -304,9 +348,12 @@
             }
 
             var formula = "";
+            console.log(queue.length);
             for (var i = 0; i < queue.length; i++) {
                 var input = queue[i].toString();
-                formula += input;
+                if(input != ""){
+                    formula += input;
+                }                
             }
 
             var temp = formula.split(/([-|+|*|/])/g);
@@ -333,7 +380,6 @@
             var calOP = "";
             console.log("temp: " + temp);
             for (var i = 0; i < temp.length; i++) {
-                console.log(temp[i]);
                 switch (temp[i]) {
                     case "+":
                     case "-":
