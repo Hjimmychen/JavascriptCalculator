@@ -148,6 +148,7 @@
             console.log(calFlag);
             console.log(queue);
             console.log(isNewNum);
+            console.log(numInput);
             if (calFlag) {
                 //重複等於會將最後兩值重複
                 if(!isNewNum && queue.length >= 3){
@@ -155,9 +156,15 @@
                     console.log("lastOne: " + lastOne);
                     var lastTwo = queue[queue.length - 2];
                     console.log("lastTwo: " + lastTwo);
+
+                    if(numInput){
+                        queue = [getDisplayValue()];
+                    }
+
                     queue.push(lastTwo);
                     queue.push(lastOne);
                     setDisplayValue(calculateQueue());
+
                 }
                 else{
                     queue.push(getDisplayValue());
