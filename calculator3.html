@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Calculator3</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-image: linear-gradient(to right, #BA68C8, #9575CD);
+    }
+
+    .ac-btn {
+        margin-bottom: 5px;
+        background-color: brown;
+        color: cornsilk;
+        height: 50px;
+        width: 50px;
+        border: 0;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 300px;
+        margin: 10px;
+        margin: 150px auto;
+    }
+
+    .container>input[type=text] {
+        width: 296px;
+        height: 50px;
+        font-size: 40px;
+        margin-bottom: 5px;
+        text-align: right;
+    }
+
+    .container>.func-group {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        flex: 1;
+        margin: 0 -2px 5px -2px;
+    }
+
+    .container>.func-group>input[type=button] {
+        width: 46px;
+        margin: 2px;
+        border: 0;
+    }
+
+    .container>.input-group {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        flex: 1;
+        margin: 0 -2px 5px -2px;
+    }
+
+    .container>.input-group>input[type=button] {
+        width: 72px;
+        height: 72px;
+        margin: 2px;
+        font-size: 30px;
+        border: 0;
+    }
+
+    input[type=button] {
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    input[type=button]:hover {
+        background-color: #757575;
+        color: white;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <input id="AC" type="button" value="AC" class="ac-btn" />
+        <input id="display" type="text" value="0" readonly />
+        <div class="func-group">
+            <input type="button" value="MR" />
+            <input type="button" value="MC" />
+            <input type="button" value="M+" />
+            <input type="button" value="M-" />
+            <input type="button" value="C" />
+            <input type="button" value="←" />
+        </div>
+        <div class="input-group">
+            <input type="button" value="7" />
+            <input type="button" value="8" />
+            <input type="button" value="9" />
+            <input type="button" value="+" />
+            <input type="button" value="4" />
+            <input type="button" value="5" />
+            <input type="button" value="6" />
+            <input type="button" value="-" />
+            <input type="button" value="1" />
+            <input type="button" value="2" />
+            <input type="button" value="3" />
+            <input type="button" value="*" />
+            <input type="button" value="0" />
+            <input type="button" value="." />
+            <input type="button" value="=" />
+            <input type="button" value="/" />
+        </div>
+    </div>
+</body>
+<script>
+    var opSymbol = ["+", "-", "*", "/"];
+    var digSymbol = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    var memory = 0;
+    var tempOP = "";
+    var tempNum = "";
+
+    $(function () {
+        init();
+    })
+
+    function init(){
+        $("#display").val("0");
+    }
+
+    //重開機
+    $("#AC").click(function () {
+        init()
+    });
+
+    //計算區域
+    $(".input-group > input[type=button]").click(function () {
+        var input = $(this).val();
+
+        if (input == "=") {
+
+        }
+        else if (input == "+" || input == "-" || input == "*" || input == "/") {
+            //乘法跟別人不一樣
+        }
+        else if (input == ".") {
+        }
+        else {
+            //數字
+        }
+
+    });
+
+    //按鍵區域
+    $(".func-group > input[type=button]").click(function () {
+        var funcName = $(this).val();
+
+        switch (funcName) {
+            case "MR":
+                break;
+            case "MC":
+                break;
+            case "M+":
+                break;
+            case "M-":
+                break;
+            case "C":
+                break;
+            case "←":
+                break;
+        }
+    });
+
+
+</script>
+
+</html>
