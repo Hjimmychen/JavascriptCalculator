@@ -166,23 +166,16 @@
                     setDisplayValue(calculateQueue());
 
                 }
-                else{
-                    queue.push(getDisplayValue());
-                    console.log(queue);
-                    setDisplayValue(calculateQueue());
-                }
-                tempTotal = getDisplayValue();
+
             }
             else {
-                if(tempOP.length > 0){
-                    pushOp(tempOP);
-                    queue.push(getDisplayValue());
-                    setDisplayValue(calculateQueue());
-                    tempTotal = getDisplayValue();
-                    calFlag = true;
-                }
+                pushOp(tempOP);
+                queue.push(getDisplayValue());
+                calFlag = true;
+                setDisplayValue(calculateQueue());
             }
             tempOP = "";
+            tempTotal = getDisplayValue();
         }
         else if (input == "+" || input == "-" || input == "*" || input == "/") {
             tempOP = input;
@@ -197,9 +190,10 @@
                     pushOp(tempOP);
                 }
 
+
                 queue.push(getDisplayValue());
                 pushOp(tempOP);
-                console.log(queue);
+                // console.log(queue);
                 setDisplayValue(calculateQueue());
 
                 numInput = false;
@@ -266,10 +260,6 @@
                 queue = new Array();
                 break;
             case "M+":
-                if(queue.length == 0){
-                    queue.push(getDisplayValue());
-                }
-
                 var result = calculateQueue();  //2*
                 if (result != 0) {
                     queue = [result];  //[2]
@@ -286,24 +276,19 @@
 
                 numInput = false;
                 calFlag = true;
-
-                queue = new Array();
                 console.log(queue);
+                //queue = new Array();
                 // if(tempOP.length != 0){
                 //     queue = new Array();
                 // }
                 // else{
                 //     queue = [cal];
                 // }
-                tempTotal = 0;
-                isNewNum = true;
+                
+                isNewNum = false;
                 break;
             case "M-":
-                var result = calculateQueue();
-                if(queue.length == 0){
-                    queue.push(getDisplayValue());
-                }
-
+            var result = calculateQueue();
                 if (result != 0) {
                     queue = [result];
                 }
@@ -319,13 +304,13 @@
 
                 numInput = false;
                 calFlag = true;
-                if(tempOP.length != 0){
-                    queue = new Array();
-                }
-                else{
-                    queue = [cal];
-                }
-
+                // if(tempOP.length != 0){
+                //     queue = new Array();
+                // }
+                // else{
+                //     queue = [cal];
+                // }
+                
                 isNewNum = true;
                 break;
             case "C":
@@ -380,8 +365,23 @@
 
             var temp = formula.split(/([-|+|*|/])/g);
             formula = "";
-            for (var i = 0; i < temp.length; i++) {       
-                if (temp[i] == "") {
+            for (var i = 0; i < temp.length; i++) {
+                
+                if (temp[i] != "") {
+                    if (opSymbol.indexOf(temp[i]) > -1) {
+                        formula += temp[i];
+                    }
+                    else {
+                        //顯示數字(包含小數點)
+                        if (temp[i].indexOf(".") > -1) {
+                            formula += temp[i];
+                        }
+                        else {
+                            formula += parseFloat(temp[i]);
+                        }
+                    }
+                }
+                else{
                     temp[i] = 0;
                 }
             }
