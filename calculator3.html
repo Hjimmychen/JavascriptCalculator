@@ -119,14 +119,25 @@
     var digSymbol = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     var memory = 0;
     var tempOP = "";
-    var tempNum = "";
+    var tempNum = -999;
+    var lastInput = "";  //最後輸入的值
+    var newInput = false;  //是否在輸入值先清空螢幕
+    var calOP = "";  //最後計算的運算元
+    var calNum = "";  //最後計算的數值
 
     $(function () {
         init();
     })
 
-    function init(){
+    function init() {
         $("#display").val("0");
+        memory = 0;
+        tempOP = "";
+        tempNum = -999
+        lastInput = "";
+        newInput = false;
+        calOP = "";
+        calNum = "";
     }
 
     //重開機
@@ -137,20 +148,92 @@
     //計算區域
     $(".input-group > input[type=button]").click(function () {
         var input = $(this).val();
+        inputFunction(input);
+    });
 
+    function inputFunction(input){
+        console.log(input);
         if (input == "=") {
+            newInput = true;
 
+            if(lastInput == input){
+                //連續計算
+                console.log("repeat cal");
+                var base = parseFloat(getDisplayValue());
+                console.log(tempNum);
+                var result = calculate(base, calNum, calOP);
+                setDisplayValue(result);
+                tempNum = result;
+            }
+            else{
+                console.log("cal");
+                var num2 = parseFloat(getDisplayValue());
+                var result = calculate(tempNum, num2, tempOP);
+                setDisplayValue(result);
+                tempNum = num2;
+
+                //保留最後運算，方便累加
+                calOP = tempOP;
+                calNum = num2;
+            }
+
+            tempOP = "";  //option
         }
         else if (input == "+" || input == "-" || input == "*" || input == "/") {
-            //乘法跟別人不一樣
-        }
-        else if (input == ".") {
+            newInput = true;
+
+            //運算元覆蓋(重覆按運算元)
+            if(opSymbol.indexOf(lastInput) > -1){
+                tempOP = input;
+                // console.log(tempOP);
+                return;
+            }
+
+            //先計算結果(如果前面有輸入)
+            //1+2-
+            console.log(tempOP);
+            console.log(tempNum);
+            if(tempOP.length > 0 && tempNum != -999){
+                var preCal = calculate(tempNum, parseFloat(getDisplayValue()), tempOP);
+                setDisplayValue(preCal);
+                tempNum = preCal;
+                //tempNum: 3
+                //tempOP: -
+            }
+
+            tempOP = input;
         }
         else {
-            //數字
+            if(newInput){
+                if(tempOP.length > 0){
+                    //將原先值保留待計算
+                    tempNum = parseFloat(getDisplayValue());
+                }
+                else{
+                    //全新輸入
+                    tempNum = -999;
+                }
+
+                newInput = false;
+                setDisplayValue("0");
+            }
+
+            if (input == ".") {
+                //小數點
+                if (!hasAnyPoint()) {
+                    //只能有一個小數點
+                    setDisplayValue(getDisplayValue() + input);
+                }
+            }
+            else {
+                //數字
+                var val = getDisplayValue();
+                setDisplayValue(val + input);
+            }
         }
 
-    });
+        lastInput = input;
+    }
 
     //按鍵區域
     $(".func-group > input[type=button]").click(function () {
@@ -158,21 +241,106 @@
 
         switch (funcName) {
             case "MR":
+                setDisplayValue(memory);
                 break;
             case "MC":
+                memory = 0;
                 break;
             case "M+":
+                inputFunction("+");  //??
+                memory += parseFloat(getDisplayValue());
+                tempNum = -999;
+                tempOP = "";
                 break;
             case "M-":
+                inputFunction("+");  //??
+                memory -= parseFloat(getDisplayValue());    
+                tempNum = -999;
+                tempOP = "";           
                 break;
             case "C":
+                //清空螢幕
+                //如果運算元按下則不給Clean
+                if(opSymbol.indexOf(lastInput) > -1 || lastInput == "="){
+                    return;
+                }
+                else{
+                    setDisplayValue("0");
+                }
                 break;
             case "←":
+                var display = getDisplayValue();
+                setDisplayValue(display.substring(0, display.length - 1));
                 break;
         }
     });
 
+    function getDisplayValue() {
+        //取得螢幕上的值
+        return $("#display").val();
+    }
 
+    function setDisplayValue(val) {
+        if (val.length == 0) {
+            $("#display").val("0");
+            return;
+        }
+
+        //顯示數值
+        val = maxBit(val);
+
+        if (val.length >= 2) {
+            if (val[0] == "0" && val[1] != ".") {
+                $("#display").val(val.substr(1, val.length - 1));
+            }
+            else {
+                $("#display").val(val);
+            }
+        }
+        else {
+            $("#display").val(val);
+        }
+    }
+
+    function hasAnyPoint() {
+        return getDisplayValue().indexOf(".") > -1;
+    }
+
+    function calculate(num1, num2, op) {
+        var result = 0.0;
+
+        switch (op) {
+            case "+":
+                result = parseFloat(num1) + parseFloat(num2);
+                break;
+            case "-":
+                result = num1 - num2;
+                break;
+            case "/":
+                result = num1 / num2;
+                break;
+            case "*":
+                result = num1 * num2;
+                break;
+        }
+
+        result = result.toFixed(8);
+        //最多八位數
+        result = maxBit(result);
+
+        return parseFloat(result);
+    }
+
+    function maxBit(str){
+        str = str.toString();
+        if(str.indexOf(".") > -1){
+            str = str.substr(0, 9);
+        }
+        else{
+            str = str.substr(0, 8);
+        }
+        return str;
+    }
 </script>
 
 </html>
