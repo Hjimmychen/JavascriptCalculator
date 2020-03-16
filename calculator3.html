@@ -124,6 +124,7 @@
     var newInput = false;  //是否在輸入值先清空螢幕
     var calOP = "";  //最後計算的運算元
     var calNum = "";  //最後計算的數值
+    var preMulti = 0;  //乘法左子
 
     $(function () {
         init();
@@ -159,11 +160,21 @@
             if(lastInput == input){
                 //連續計算
                 console.log("repeat cal");
-                var base = parseFloat(getDisplayValue());
-                console.log(tempNum);
-                var result = calculate(base, calNum, calOP);
-                setDisplayValue(result);
-                tempNum = result;
+                if(calOP == "*"){
+                    //連續乘法是以最初值，非輸入值
+                    console.log("preMulti: " + preMulti);
+                    var base = parseFloat(getDisplayValue());
+                    var result = calculate(preMulti, base, calOP);
+                    setDisplayValue(result);
+                    tempNum = result;
+                }
+                else{
+                    var base = parseFloat(getDisplayValue());
+                    console.log(tempNum);
+                    var result = calculate(base, calNum, calOP);
+                    setDisplayValue(result);
+                    tempNum = result;
+                }
             }
             else{
                 console.log("cal");
@@ -199,6 +210,14 @@
                 tempNum = preCal;
                 //tempNum: 3
                 //tempOP: -
+                if(input == "*"){
+                    //乘法時保留計算結果，方便取回最先值
+                    preMulti = preCal;
+                }
+            }
+            else{
+                //乘法時保留計算結果，方便取回最先值
+                preMulti = parseFloat(getDisplayValue());
             }
 
             tempOP = input;
