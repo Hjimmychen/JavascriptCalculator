@@ -139,6 +139,7 @@
         newInput = false;
         calOP = "";
         calNum = "";
+        preMulti = 0;
     }
 
     //重開機
@@ -208,17 +209,17 @@
                 var preCal = calculate(tempNum, parseFloat(getDisplayValue()), tempOP);
                 setDisplayValue(preCal);
                 tempNum = preCal;
-                //tempNum: 3
-                //tempOP: -
-                if(input == "*"){
-                    //乘法時保留計算結果，方便取回最先值
-                    preMulti = preCal;
-                }
+            }
+
+            //乘法時保留計算結果，方便取回最先值
+            if(tempOP.length > 0 && tempNum != -999 && input == "*"){
+                preMulti = preCal;
             }
             else{
-                //乘法時保留計算結果，方便取回最先值
                 preMulti = parseFloat(getDisplayValue());
             }
+
+            console.log("pre mul: " + preMulti);
 
             tempOP = input;
         }
