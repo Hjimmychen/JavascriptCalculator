@@ -116,7 +116,6 @@
 </body>
 <script>
     var opSymbol = ["+", "-", "*", "/"];
-    var digSymbol = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     var memory = 0;
     var tempOP = "";
     var tempNum = -999;
@@ -331,7 +330,7 @@
 
         switch (op) {
             case "+":
-                result = parseFloat(num1) + parseFloat(num2);
+                result = num1 + num2;
                 break;
             case "-":
                 result = num1 - num2;

@@ -126,7 +126,16 @@
     var numInput = true;  //是否已輸入數字
 
     $(function () {
+        test1(test2);
     })
+
+    function test1(callback){
+        console.log('test1');
+    }
+
+    function test2(){
+        console.log('test2');
+    }
 
     //重開機
     $("#AC").click(function () {
