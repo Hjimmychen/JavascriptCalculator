@@ -6,7 +6,13 @@
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
 </head>
 <style>
+    @font-face {
+        font-family: 'digital-clock-font';
+        src: url('./digital-7/digital-7.ttf');
+    }
+
     * {
+        font-family: 'digital-clock-font';
         margin: 0;
         padding: 0;
     }
@@ -31,6 +37,7 @@
         width: 300px;
         margin: 10px;
         margin: 150px auto;
+        position: relative;
     }
 
     .container>input[type=text] {
@@ -69,6 +76,7 @@
         margin: 2px;
         font-size: 30px;
         border: 0;
+        /* background-color: white; */
     }
 
     input[type=button] {
@@ -80,12 +88,24 @@
         background-color: #757575;
         color: white;
     }
+
+    img.dig {
+        height: 40px;
+    }
+
+    #screen {
+        position: absolute;
+        right: 2px;
+        top: 62px;
+    }
 </style>
 
 <body>
     <div class="container">
         <input id="AC" type="button" value="AC" class="ac-btn" />
         <input id="display" type="text" value="0" readonly />
+        <div id="screen">
+        </div>
         <div class="func-group">
             <input type="button" value="MR" />
             <input type="button" value="MC" />
@@ -131,6 +151,8 @@
 
     function init() {
         $("#display").val("0");
+        $("#screen").empty().append('<img src="images/zero.png" class="dig" />');
+
         memory = 0;
         tempOP = "";
         tempNum = -999
@@ -152,15 +174,15 @@
         inputFunction(input);
     });
 
-    function inputFunction(input){
+    function inputFunction(input) {
         console.log(input);
         if (input == "=") {
             newInput = true;
 
-            if(lastInput == input){
+            if (lastInput == input) {
                 //連續計算
                 console.log("repeat cal");
-                if(calOP == "*"){
+                if (calOP == "*") {
                     //連續乘法是以最初值，非輸入值
                     console.log("preMulti: " + preMulti);
                     var base = parseFloat(getDisplayValue());
@@ -168,7 +190,7 @@
                     setDisplayValue(result);
                     tempNum = result;
                 }
-                else{
+                else {
                     var base = parseFloat(getDisplayValue());
                     console.log(tempNum);
                     var result = calculate(base, calNum, calOP);
@@ -176,7 +198,7 @@
                     tempNum = result;
                 }
             }
-            else{
+            else {
                 console.log("cal");
                 var num2 = parseFloat(getDisplayValue());
                 var result = calculate(tempNum, num2, tempOP);
@@ -194,7 +216,7 @@
             newInput = true;
 
             //運算元覆蓋(重覆按運算元)
-            if(opSymbol.indexOf(lastInput) > -1){
+            if (opSymbol.indexOf(lastInput) > -1) {
                 tempOP = input;
                 // console.log(tempOP);
                 return;
@@ -204,17 +226,17 @@
             //1+2-
             console.log(tempOP);
             console.log(tempNum);
-            if(tempOP.length > 0 && tempNum != -999){
+            if (tempOP.length > 0 && tempNum != -999) {
                 var preCal = calculate(tempNum, parseFloat(getDisplayValue()), tempOP);
                 setDisplayValue(preCal);
                 tempNum = preCal;
             }
 
             //乘法時保留計算結果，方便取回最先值
-            if(tempOP.length > 0 && tempNum != -999 && input == "*"){
+            if (tempOP.length > 0 && tempNum != -999 && input == "*") {
                 preMulti = preCal;
             }
-            else{
+            else {
                 preMulti = parseFloat(getDisplayValue());
             }
 
@@ -223,12 +245,12 @@
             tempOP = input;
         }
         else {
-            if(newInput){
-                if(tempOP.length > 0){
+            if (newInput) {
+                if (tempOP.length > 0) {
                     //將原先值保留待計算
                     tempNum = parseFloat(getDisplayValue());
                 }
-                else{
+                else {
                     //全新輸入
                     tempNum = -999;
                 }
@@ -273,17 +295,17 @@
                 break;
             case "M-":
                 inputFunction("+");  //??
-                memory -= parseFloat(getDisplayValue());    
+                memory -= parseFloat(getDisplayValue());
                 tempNum = -999;
-                tempOP = "";           
+                tempOP = "";
                 break;
             case "C":
                 //清空螢幕
                 //如果運算元按下則不給Clean
-                if(opSymbol.indexOf(lastInput) > -1 || lastInput == "="){
+                if (opSymbol.indexOf(lastInput) > -1 || lastInput == "=") {
                     return;
                 }
-                else{
+                else {
                     setDisplayValue("0");
                 }
                 break;
@@ -310,14 +332,58 @@
 
         if (val.length >= 2) {
             if (val[0] == "0" && val[1] != ".") {
-                $("#display").val(val.substr(1, val.length - 1));
-            }
-            else {
-                $("#display").val(val);
+                val = val.substr(1, val.length - 1);
             }
         }
-        else {
-            $("#display").val(val);
+
+        //利用圖片顯示數值
+        $("#display").val(val);
+        displayDigImages(val);
+    }
+
+    function displayDigImages(val) {
+        console.log("displayDigImages: " + val);
+        $("#screen").empty();
+
+        for (var i = 0; i < val.length; i++) {
+            switch (val[i]) {
+                case ".":
+                    $("#screen").append('<img src="images/dot.png" class="dig"/>');
+                    break;
+                case "-":
+                    $("#screen").append('<img src="images/minus.png" class="dig"/>');
+                    break;
+                case "0":
+                    $("#screen").append('<img src="images/zero.png" class="dig"/>');
+                    break;
+                case "1":
+                    $("#screen").append('<img src="images/one.png" class="dig"/>');
+                    break;
+                case "2":
+                    $("#screen").append('<img src="images/two.png" class="dig"/>');
+                    break;
+                case "3":
+                    $("#screen").append('<img src="images/three.png" class="dig"/>');
+                    break;
+                case "4":
+                    $("#screen").append('<img src="images/four.png" class="dig"/>');
+                    break;
+                case "5":
+                    $("#screen").append('<img src="images/five.png" class="dig"/>');
+                    break;
+                case "6":
+                    $("#screen").append('<img src="images/six.png" class="dig"/>');
+                    break;
+                case "7":
+                    $("#screen").append('<img src="images/seven.png" class="dig"/>');
+                    break;
+                case "8":
+                    $("#screen").append('<img src="images/eight.png" class="dig"/>');
+                    break;
+                case "9":
+                    $("#screen").append('<img src="images/nine.png" class="dig"/>');
+                    break;
+            }
         }
     }
 
@@ -350,12 +416,12 @@
         return parseFloat(result);
     }
 
-    function maxBit(str){
+    function maxBit(str) {
         str = str.toString();
-        if(str.indexOf(".") > -1){
+        if (str.indexOf(".") > -1) {
             str = str.substr(0, 9);
         }
-        else{
+        else {
             str = str.substr(0, 8);
         }
         return str;
