@@ -6,7 +6,7 @@
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
 </head>
 <style>
-    @font-face {
+    /* @font-face {
         font-family: 'digital-clock-font';
         src: url('./digital-7/digital-7.ttf');
     }
@@ -15,7 +15,7 @@
         font-family: 'digital-clock-font';
         margin: 0;
         padding: 0;
-    }
+    } */
 
     body {
         background-image: linear-gradient(to right, #BA68C8, #9575CD);
@@ -95,12 +95,14 @@
 
     #screen {
         position: absolute;
+        z-index: 100;
         right: 2px;
         top: 62px;
     }
 
     .cover{
         position: absolute;
+        z-index: 99;
         right: 0px;
         top: 57px;  
         height: 50px;
@@ -335,12 +337,12 @@
     function setDisplayValue(val) {
         if (val.length == 0) {
             $("#display").val("0");
+            displayDigImages("0");
             return;
         }
 
         //顯示數值
         val = maxBit(val);
-
         if (val.length >= 2) {
             if (val[0] == "0" && val[1] != ".") {
                 val = val.substr(1, val.length - 1);
